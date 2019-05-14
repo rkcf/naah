@@ -1,0 +1,48 @@
+#!/bin/bash
+# naah - not another aur helper
+
+VERSION="0.0.1"
+
+usage () {
+	echo "Usage: naah PKGNAME"
+}
+
+if [ $# -ne 1 ]; then
+	usage
+	exit 1
+fi
+
+PKGNAME=$1
+
+echo "Downloading $PKGNAME"
+curl -sfO https://aur.archlinux.org/cgit/aur.git/snapshot/$PKGNAME.tar.gz
+if [ $? -ne 0 ]; then
+	echo "failed to retrieve https://aur.archlinux.org/cgit/aur.git/snapshot/$PKGNAME.tar.gz"
+	exit 1
+fi
+
+tar xzf $PKGNAME.tar.gz
+rm $PKGNAME.tar.gz
+cd $PKGNAME
+$PAGER PKGBUILD
+
+read -p "Build Package [y/n]: "
+if [[ $REPLY == [yY]* ]]; then
+	makepkg
+else
+	echo "exiting"
+	exit 0
+fi
+
+read -p "Install Package [y/n]: "
+if [[ $REPLY == [yY]* ]]; then
+	pkgfile=$(makepkg --packagelist)
+	sudo pacman -U $pkgfile
+else
+	echo "exiting"
+	exit 0
+fi
+
+exit 0
+
+# vim:set ts=2 sw=2 et:
