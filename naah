@@ -4,12 +4,12 @@
 VERSION="0.0.1"
 
 usage () {
-	echo "Usage: naah PKGNAME"
+  echo "Usage: naah PKGNAME"
 }
 
 if [ $# -ne 1 ]; then
-	usage
-	exit 1
+  usage
+  exit 1
 fi
 
 PKGNAME=$1
@@ -17,8 +17,8 @@ PKGNAME=$1
 echo "Downloading $PKGNAME"
 curl -sfO https://aur.archlinux.org/cgit/aur.git/snapshot/$PKGNAME.tar.gz
 if [ $? -ne 0 ]; then
-	echo "failed to retrieve https://aur.archlinux.org/cgit/aur.git/snapshot/$PKGNAME.tar.gz"
-	exit 1
+  echo "failed to retrieve https://aur.archlinux.org/cgit/aur.git/snapshot/$PKGNAME.tar.gz"
+  exit 1
 fi
 
 tar xzf $PKGNAME.tar.gz
@@ -28,23 +28,23 @@ $PAGER PKGBUILD
 
 read -p "Build Package [y/n]: "
 if [[ $REPLY == [yY]* ]]; then
-	makepkg -s
+  makepkg -s
   if [ $? -ne 0 ]; then
     echo "exiting"
     exit 0
   fi
 else
-	echo "exiting"
-	exit 0
+  echo "exiting"
+  exit 0
 fi
 
 read -p "Install Package [y/n]: "
 if [[ $REPLY == [yY]* ]]; then
-	pkgfile=$(makepkg --packagelist)
-	sudo pacman -U $pkgfile
+  pkgfile=$(makepkg --packagelist)
+  sudo pacman -U $pkgfile
 else
-	echo "exiting"
-	exit 0
+  echo "exiting"
+  exit 0
 fi
 
 exit 0
