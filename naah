@@ -28,7 +28,11 @@ $PAGER PKGBUILD
 
 read -p "Build Package [y/n]: "
 if [[ $REPLY == [yY]* ]]; then
-	makepkg
+	makepkg -s
+  if [ $? -ne 0 ]; then
+    echo "exiting"
+    exit 0
+  fi
 else
 	echo "exiting"
 	exit 0
